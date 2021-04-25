@@ -2,10 +2,16 @@
   "name": "test-cli",
   "version": "1.0.0",
   "description": "test-cli",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "test"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^7.2.0",
+    "express": "^4.17.1",
+    "inquirer": "^8.0.0",
+    "pg": "^8.6.0"
+  }
 }
