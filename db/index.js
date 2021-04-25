@@ -10,8 +10,15 @@ const pool = new Pool({
   port: config.port_db,
 })
 
-module.exports = {
-  query: (text, params, callback) => {
-    return pool.query(text, params, callback)
-  },
-}
+
+pool.query("CREATE TABLE users ( id INT, name VARCHAR(24), password VARCHAR(255))", (err,res) => {
+  console.log(err,res)
+  pool.end()
+})
+
+
+// module.exports = {
+//   query: (text, params, callback) => {
+//     return pool.query(text, params, callback)
+//   },
+// }

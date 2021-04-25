@@ -4,10 +4,12 @@ const commander = require('commander'),
     { prompt } = require('inquirer'),
     chalk = require('chalk'),
     fs = require('fs')
+    const http = require('https'); // or 'https' for https:// URLs
 
-const server = require('./server');
 
-server.serverWeb();
+
+
+
 
 commander
     .version('0.0.1')
@@ -27,110 +29,36 @@ commander
             prompt([
                 {
                     type: 'input',
-                    name: 'charset',
-                    message: 'Charset: ',
+                    name: 'name',
+                    message: 'Name: ',
                 },
                 {
-                    type: 'input',
-                    name: 'max_ram_usage',
-                    message: 'Max RAM usage, Mb: ',
-                },
-                {
-                    type: 'input',
-                    name: 'max_cpu_usage',
-                    message: 'Max CPU usage, %: ',
-                },
-                {
-                    type: 'input',
-                    name: 'check_updates_interval',
-                    message: 'Updates interval, ms: ',
-                },
-                {
-                    type: 'input',
-                    name: 'processes_count',
-                    message: 'Processes count: ',
+                    type: 'password',
+                    name: 'password',
+                    message: 'Password: ',
                 },
             ]).then((options) => {
-                if (cmd.extension && cmd.extension === 'json') {
-                    fs.writeFileSync(
-                        `files/${name}.${cmd.extension}`,
-                        JSON.stringify(options)
-                    )
-                } else {
-                    let data = ''
-                    for (let item in options)
-                        data += `${item}=${options[item]} \n`
 
-                    fs.writeFileSync(`files/${name}.cfg`, data)
-                }
-                console.log(
-                    chalk.green(
-                        `\nFile "${name}.${cmd.extension || 'cfg'
-                        }" created.`
-                    )
-                )
             })
         }
     })
 
+commander 
+.command('start server')
+.action((cmd) => {
+    server = require('./server');
+    server.serverWeb();
+})
+
 commander
-    .command('<url>')
-    .option('-s <value>', 'Save file')
+    .command('save <url>')
+   
     .description('Save file from url.')
     .action((url, cmd) => {
-        if (
-            cmd.extension &&
-            !['json', 'txt', 'cfg'].includes(cmd.extension)
-        ) {
-            console.log(chalk.red('\nExtension is not allowed.'))
-        } else {
-            prompt([
-                {
-                    type: 'input',
-                    name: 'charset',
-                    message: 'Charset: ',
-                },
-                {
-                    type: 'input',
-                    name: 'max_ram_usage',
-                    message: 'Max RAM usage, Mb: ',
-                },
-                {
-                    type: 'input',
-                    name: 'max_cpu_usage',
-                    message: 'Max CPU usage, %: ',
-                },
-                {
-                    type: 'input',
-                    name: 'check_updates_interval',
-                    message: 'Updates interval, ms: ',
-                },
-                {
-                    type: 'input',
-                    name: 'processes_count',
-                    message: 'Processes count: ',
-                },
-            ]).then((options) => {
-                if (cmd.extension && cmd.extension === 'json') {
-                    fs.writeFileSync(
-                        `files/${name}.${cmd.extension}`,
-                        JSON.stringify(options)
-                    )
-                } else {
-                    let data = ''
-                    for (let item in options)
-                        data += `${item}=${options[item]} \n`
-
-                    fs.writeFileSync(`files/${name}.cfg`, data)
-                }
-                console.log(
-                    chalk.green(
-                        `\nFile "${name}.${cmd.extension || 'cfg'
-                        }" created.`
-                    )
-                )
-            })
-        }
+        const file = fs.createWriteStream("file.jpg");
+        const request = http.get(url, function(response) {
+          response.pipe(file);
+    });
     })
 
 
